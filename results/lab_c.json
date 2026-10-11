@@ -1,0 +1,602 @@
+{
+  "db": "lab_c",
+  "class_I": {
+    "customer": {
+      "record_parity": 1.0,
+      "source_rows": 20000,
+      "target_docs": 20000,
+      "digest_parity_strict": 1.0,
+      "digest_parity_lenient_null": 1.0,
+      "keys_not_found_in_target": 0,
+      "target_key_collisions": 0,
+      "mismatches_by_column": {},
+      "null_became_absent_by_column": {},
+      "timestamp_distinct_source": 20000,
+      "timestamp_distinct_target": 20000,
+      "timestamp_ties_created": 0
+    },
+    "account": {
+      "record_parity": 1.0,
+      "source_rows": 30000,
+      "target_docs": 30000,
+      "digest_parity_strict": 1.0,
+      "digest_parity_lenient_null": 1.0,
+      "keys_not_found_in_target": 0,
+      "target_key_collisions": 0,
+      "mismatches_by_column": {},
+      "null_became_absent_by_column": {}
+    },
+    "ledger_entry": {
+      "record_parity": 1.0,
+      "source_rows": 1004455,
+      "target_docs": 1004455,
+      "digest_parity_strict": 1.0,
+      "digest_parity_lenient_null": 1.0,
+      "keys_not_found_in_target": 0,
+      "target_key_collisions": 0,
+      "mismatches_by_column": {},
+      "null_became_absent_by_column": {},
+      "timestamp_distinct_source": 1004455,
+      "timestamp_distinct_target": 1004455,
+      "timestamp_ties_created": 0
+    },
+    "orders": {
+      "record_parity": 1.0,
+      "source_rows": 150000,
+      "target_docs": 150000,
+      "digest_parity_strict": 0.20946666666666666,
+      "digest_parity_lenient_null": 0.20946666666666666,
+      "keys_not_found_in_target": 0,
+      "target_key_collisions": 0,
+      "mismatches_by_column": {
+        "customer_address": 118580
+      },
+      "null_became_absent_by_column": {},
+      "timestamp_distinct_source": 150000,
+      "timestamp_distinct_target": 150000,
+      "timestamp_ties_created": 0
+    },
+    "aggregate_drift": {
+      "ledger_entry.amount": {
+        "source_sum": "2035462670206954663.2784",
+        "target_sum": "2035462670206954663.2784",
+        "absolute_drift": "0.0000",
+        "relative_drift": 0.0,
+        "target_sum_type": "Decimal128"
+      },
+      "orders.total": {
+        "source_sum": "737437321324359134.3758",
+        "target_sum": "737437321324359134.3758",
+        "absolute_drift": "0.0000",
+        "relative_drift": 0.0,
+        "target_sum_type": "Decimal128"
+      }
+    }
+  },
+  "class_II": {
+    "predicates": [
+      {
+        "predicate": "phone IS NULL",
+        "sql": 6644,
+        "mongo": 6644,
+        "diverges": false
+      },
+      {
+        "predicate": "phone IS NOT NULL",
+        "sql": 13356,
+        "mongo": 13356,
+        "diverges": false
+      },
+      {
+        "predicate": "phone = ''",
+        "sql": 6621,
+        "mongo": 6621,
+        "diverges": false
+      },
+      {
+        "predicate": "phone <> ''",
+        "sql": 6735,
+        "mongo": 13379,
+        "diverges": true
+      },
+      {
+        "predicate": "phone IS NULL OR = ''",
+        "sql": 13265,
+        "mongo": 13265,
+        "diverges": false
+      },
+      {
+        "predicate": "NOT (phone = '')",
+        "sql": 6735,
+        "mongo": 13379,
+        "diverges": true
+      },
+      {
+        "predicate": "memo IS NULL",
+        "sql": 335138,
+        "mongo": 335138,
+        "diverges": false
+      },
+      {
+        "predicate": "memo <> ''",
+        "sql": 334621,
+        "mongo": 669759,
+        "diverges": true
+      },
+      {
+        "predicate": "memo IS DISTINCT FROM ''",
+        "sql": 669759,
+        "mongo": 669759,
+        "diverges": false
+      }
+    ],
+    "predicate_divergence": 3
+  },
+  "class_III": {
+    "inventory_size": 30,
+    "probes": [
+      {
+        "table": "account",
+        "constraint": "balance_nonneg",
+        "probe": "hand-written violation",
+        "source_rejects": true,
+        "source_sqlstate": "23514",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "account",
+        "constraint": "status_enum",
+        "probe": "hand-written violation",
+        "source_rejects": true,
+        "source_sqlstate": "23514",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "account",
+        "constraint": "account_customer_id_fkey",
+        "probe": "customer_id -> nonexistent",
+        "source_rejects": true,
+        "source_sqlstate": "23503",
+        "target_rejects": false,
+        "target_code": null,
+        "status": "EVAPORATED"
+      },
+      {
+        "table": "account",
+        "constraint": "account_id_not_null",
+        "probe": "account_id = null",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "account",
+        "constraint": "account_id_not_null",
+        "probe": "account_id absent",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "account",
+        "constraint": "balance_not_null",
+        "probe": "balance = null",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "account",
+        "constraint": "balance_not_null",
+        "probe": "balance absent",
+        "source_rejects": false,
+        "source_sqlstate": null,
+        "status": "INVALID_PROBE"
+      },
+      {
+        "table": "account",
+        "constraint": "customer_id_not_null",
+        "probe": "customer_id = null",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "account",
+        "constraint": "customer_id_not_null",
+        "probe": "customer_id absent",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "account",
+        "constraint": "status_not_null",
+        "probe": "status = null",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "account",
+        "constraint": "status_not_null",
+        "probe": "status absent",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "account",
+        "constraint": "account_pkey",
+        "probe": "duplicate key",
+        "source_rejects": true,
+        "source_sqlstate": "23505",
+        "target_rejects": true,
+        "target_code": 11000,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "customer",
+        "constraint": "uq_customer_email",
+        "probe": "hand-written violation",
+        "source_rejects": true,
+        "source_sqlstate": "23505",
+        "target_rejects": true,
+        "target_code": 11000,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "customer",
+        "constraint": "address_not_null",
+        "probe": "address = null",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "customer",
+        "constraint": "address_not_null",
+        "probe": "address absent",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "customer",
+        "constraint": "customer_id_not_null",
+        "probe": "customer_id = null",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "customer",
+        "constraint": "customer_id_not_null",
+        "probe": "customer_id absent",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "customer",
+        "constraint": "email_not_null",
+        "probe": "email = null",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "customer",
+        "constraint": "email_not_null",
+        "probe": "email absent",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "customer",
+        "constraint": "updated_at_not_null",
+        "probe": "updated_at = null",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "customer",
+        "constraint": "updated_at_not_null",
+        "probe": "updated_at absent",
+        "source_rejects": false,
+        "source_sqlstate": null,
+        "status": "INVALID_PROBE"
+      },
+      {
+        "table": "customer",
+        "constraint": "customer_pkey",
+        "probe": "duplicate key",
+        "source_rejects": true,
+        "source_sqlstate": "23505",
+        "target_rejects": true,
+        "target_code": 11000,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "ledger_entry",
+        "constraint": "nonzero",
+        "probe": "hand-written violation",
+        "source_rejects": true,
+        "source_sqlstate": "23514",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "ledger_entry",
+        "constraint": "ledger_entry_account_id_fkey",
+        "probe": "account_id -> nonexistent",
+        "source_rejects": true,
+        "source_sqlstate": "23503",
+        "target_rejects": false,
+        "target_code": null,
+        "status": "EVAPORATED"
+      },
+      {
+        "table": "ledger_entry",
+        "constraint": "uq_acct_ref",
+        "probe": "hand-written violation",
+        "source_rejects": true,
+        "source_sqlstate": "23505",
+        "target_rejects": true,
+        "target_code": 11000,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "ledger_entry",
+        "constraint": "account_id_not_null",
+        "probe": "account_id = null",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "ledger_entry",
+        "constraint": "account_id_not_null",
+        "probe": "account_id absent",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "ledger_entry",
+        "constraint": "amount_not_null",
+        "probe": "amount = null",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "ledger_entry",
+        "constraint": "amount_not_null",
+        "probe": "amount absent",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "ledger_entry",
+        "constraint": "entry_id_not_null",
+        "probe": "entry_id = null",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "ledger_entry",
+        "constraint": "entry_id_not_null",
+        "probe": "entry_id absent",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "ledger_entry",
+        "constraint": "ledger_entry_pkey",
+        "probe": "duplicate key",
+        "source_rejects": true,
+        "source_sqlstate": "23505",
+        "target_rejects": true,
+        "target_code": 11000,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "orders",
+        "constraint": "order_status",
+        "probe": "hand-written violation",
+        "source_rejects": true,
+        "source_sqlstate": "23514",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "orders",
+        "constraint": "total_pos",
+        "probe": "hand-written violation",
+        "source_rejects": true,
+        "source_sqlstate": "23514",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "orders",
+        "constraint": "orders_customer_id_fkey",
+        "probe": "customer_id -> nonexistent",
+        "source_rejects": true,
+        "source_sqlstate": "23503",
+        "target_rejects": false,
+        "target_code": null,
+        "status": "EVAPORATED"
+      },
+      {
+        "table": "orders",
+        "constraint": "created_at_not_null",
+        "probe": "created_at = null",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "orders",
+        "constraint": "created_at_not_null",
+        "probe": "created_at absent",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "orders",
+        "constraint": "customer_id_not_null",
+        "probe": "customer_id = null",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "orders",
+        "constraint": "customer_id_not_null",
+        "probe": "customer_id absent",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "orders",
+        "constraint": "order_id_not_null",
+        "probe": "order_id = null",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "orders",
+        "constraint": "order_id_not_null",
+        "probe": "order_id absent",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "orders",
+        "constraint": "status_not_null",
+        "probe": "status = null",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "orders",
+        "constraint": "status_not_null",
+        "probe": "status absent",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "orders",
+        "constraint": "total_not_null",
+        "probe": "total = null",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "orders",
+        "constraint": "total_not_null",
+        "probe": "total absent",
+        "source_rejects": true,
+        "source_sqlstate": "23502",
+        "target_rejects": true,
+        "target_code": 121,
+        "status": "PRESERVED"
+      },
+      {
+        "table": "orders",
+        "constraint": "orders_pkey",
+        "probe": "duplicate key",
+        "source_rejects": true,
+        "source_sqlstate": "23505",
+        "target_rejects": true,
+        "target_code": 11000,
+        "status": "PRESERVED"
+      }
+    ],
+    "constraint_survival": 0.9318181818181818,
+    "status_counts": {
+      "PRESERVED": 41,
+      "EVAPORATED": 3,
+      "INVALID_PROBE": 2
+    }
+  }
+}

@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: lab
+      POSTGRES_PASSWORD: lab
+      POSTGRES_DB: lab
+    ports: ["5432:5432"]
+    volumes: ["./sql:/docker-entrypoint-initdb.d:ro"]   # runs schema.sql on first start
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lab"]
+      interval: 3s
+      retries: 20
+
+  mongo:
+    image: mongo:7.0
+    # Single-node replica set: needed for multi-document transactions (Class IV).
+    # A short transaction lifetime keeps killed transactions from holding locks for 60 s.
+    command: ["--replSet", "rs0", "--bind_ip_all",
+              "--setParameter", "transactionLifetimeLimitSeconds=5"]
+    ports: ["27017:27017"]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval",
+             "try { rs.status().ok } catch (e) { rs.initiate({_id:'rs0',members:[{_id:0,host:'localhost:27017'}]}).ok }"]
+      interval: 3s
+      retries: 30

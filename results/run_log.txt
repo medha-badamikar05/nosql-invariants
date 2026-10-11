@@ -1,0 +1,511 @@
+== versions
+db version v7.0.43
+PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+== generate
+customer 20000
+account 30000
+ledger_entry 800000
+orders 150000
+== path A
+Path A: customer
+Path A: account
+Path A: ledger_entry
+Path A: orders
+Path A complete -> database lab_a
+== path B
+snapshot customer: 20000
+snapshot account: 30000
+snapshot ledger_entry: 800000
+snapshot orders: 150000
+snapshot customer: 20000
+snapshot account: 30000
+snapshot ledger_entry: 800000
+snapshot orders: 150000
+snapshot customer: 20000
+snapshot account: 30000
+snapshot ledger_entry: 800000
+snapshot orders: 150000
+== harness (classes I-III)
+
+=== lab_a ===
+customer      record parity 1.0000 | digest parity strict 0.0012 lenient 0.0012 | keys lost 0 | collisions 0 | mismatches {'updated_at': 19976}
+              timestamp ties created: 0
+account       record parity 1.0000 | digest parity strict 1.0000 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+ledger_entry  record parity 1.0000 | digest parity strict 0.0000 lenient 0.0000 | keys lost 16130 | collisions 6589 | mismatches {'amount': 783021, 'posted_at': 783034}
+              timestamp ties created: 44338
+orders        record parity 1.0000 | digest parity strict 0.0000 lenient 0.0000 | keys lost 0 | collisions 0 | mismatches {'total': 149846, 'created_at': 149842}
+              timestamp ties created: 9
+drift ledger_entry.amount: 66.2967 (relative 4.083e-17, target type float)
+drift orders.total: 33.6242 (relative 4.560e-17, target type float)
+Class II predicate divergence: 3 of 9
+   phone IS NULL              sql=    6683 mongo=    6683 
+   phone IS NOT NULL          sql=   13317 mongo=   13317 
+   phone = ''                 sql=    6586 mongo=    6586 
+   phone <> ''                sql=    6731 mongo=   13414 DIVERGES
+   phone IS NULL OR = ''      sql=   13269 mongo=   13269 
+   NOT (phone = '')           sql=    6731 mongo=   13414 DIVERGES
+   memo IS NULL               sql=  267114 mongo=  267114 
+   memo <> ''                 sql=  266453 mongo=  533567 DIVERGES
+   memo IS DISTINCT FROM ''   sql=  533567 mongo=  533567 
+Class III: 30 declared constraints; survival 0.0; {'EVAPORATED': 44, 'INVALID_PROBE': 2}
+   EVAPORATED    account.balance_nonneg (hand-written violation)
+   EVAPORATED    account.status_enum (hand-written violation)
+   EVAPORATED    account.account_customer_id_fkey (customer_id -> nonexistent)
+   EVAPORATED    account.account_id_not_null (account_id = null)
+   EVAPORATED    account.account_id_not_null (account_id absent)
+   EVAPORATED    account.balance_not_null (balance = null)
+   INVALID_PROBE account.balance_not_null (balance absent)
+   EVAPORATED    account.customer_id_not_null (customer_id = null)
+   EVAPORATED    account.customer_id_not_null (customer_id absent)
+   EVAPORATED    account.status_not_null (status = null)
+   EVAPORATED    account.status_not_null (status absent)
+   EVAPORATED    account.account_pkey (duplicate key)
+   EVAPORATED    customer.uq_customer_email (hand-written violation)
+   EVAPORATED    customer.address_not_null (address = null)
+   EVAPORATED    customer.address_not_null (address absent)
+   EVAPORATED    customer.customer_id_not_null (customer_id = null)
+   EVAPORATED    customer.customer_id_not_null (customer_id absent)
+   EVAPORATED    customer.email_not_null (email = null)
+   EVAPORATED    customer.email_not_null (email absent)
+   EVAPORATED    customer.updated_at_not_null (updated_at = null)
+   INVALID_PROBE customer.updated_at_not_null (updated_at absent)
+   EVAPORATED    customer.customer_pkey (duplicate key)
+   EVAPORATED    ledger_entry.nonzero (hand-written violation)
+   EVAPORATED    ledger_entry.ledger_entry_account_id_fkey (account_id -> nonexistent)
+   EVAPORATED    ledger_entry.uq_acct_ref (hand-written violation)
+   EVAPORATED    ledger_entry.account_id_not_null (account_id = null)
+   EVAPORATED    ledger_entry.account_id_not_null (account_id absent)
+   EVAPORATED    ledger_entry.amount_not_null (amount = null)
+   EVAPORATED    ledger_entry.amount_not_null (amount absent)
+   EVAPORATED    ledger_entry.entry_id_not_null (entry_id = null)
+   EVAPORATED    ledger_entry.entry_id_not_null (entry_id absent)
+   EVAPORATED    ledger_entry.ledger_entry_pkey (duplicate key)
+   EVAPORATED    orders.order_status (hand-written violation)
+   EVAPORATED    orders.total_pos (hand-written violation)
+   EVAPORATED    orders.orders_customer_id_fkey (customer_id -> nonexistent)
+   EVAPORATED    orders.created_at_not_null (created_at = null)
+   EVAPORATED    orders.created_at_not_null (created_at absent)
+   EVAPORATED    orders.customer_id_not_null (customer_id = null)
+   EVAPORATED    orders.customer_id_not_null (customer_id absent)
+   EVAPORATED    orders.order_id_not_null (order_id = null)
+   EVAPORATED    orders.order_id_not_null (order_id absent)
+   EVAPORATED    orders.status_not_null (status = null)
+   EVAPORATED    orders.status_not_null (status absent)
+   EVAPORATED    orders.total_not_null (total = null)
+   EVAPORATED    orders.total_not_null (total absent)
+   EVAPORATED    orders.orders_pkey (duplicate key)
+
+written to /Users/medhabadamikar/Downloads/migration-lab/results/lab_a.json
+
+=== lab_b ===
+customer      record parity 1.0000 | digest parity strict 1.0000 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+              timestamp ties created: 0
+account       record parity 1.0000 | digest parity strict 1.0000 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+ledger_entry  record parity 1.0000 | digest parity strict 1.0000 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+              timestamp ties created: 0
+orders        record parity 1.0000 | digest parity strict 1.0000 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+              timestamp ties created: 0
+drift ledger_entry.amount: 0.0000 (relative 0.000e+00, target type Decimal128)
+drift orders.total: 0.0000 (relative 0.000e+00, target type Decimal128)
+Class II predicate divergence: 3 of 9
+   phone IS NULL              sql=    6683 mongo=    6683 
+   phone IS NOT NULL          sql=   13317 mongo=   13317 
+   phone = ''                 sql=    6586 mongo=    6586 
+   phone <> ''                sql=    6731 mongo=   13414 DIVERGES
+   phone IS NULL OR = ''      sql=   13269 mongo=   13269 
+   NOT (phone = '')           sql=    6731 mongo=   13414 DIVERGES
+   memo IS NULL               sql=  267114 mongo=  267114 
+   memo <> ''                 sql=  266453 mongo=  533567 DIVERGES
+   memo IS DISTINCT FROM ''   sql=  533567 mongo=  533567 
+Class III: 30 declared constraints; survival 0.9318181818181818; {'PRESERVED': 41, 'EVAPORATED': 3, 'INVALID_PROBE': 2}
+   PRESERVED     account.balance_nonneg (hand-written violation)
+   PRESERVED     account.status_enum (hand-written violation)
+   EVAPORATED    account.account_customer_id_fkey (customer_id -> nonexistent)
+   PRESERVED     account.account_id_not_null (account_id = null)
+   PRESERVED     account.account_id_not_null (account_id absent)
+   PRESERVED     account.balance_not_null (balance = null)
+   INVALID_PROBE account.balance_not_null (balance absent)
+   PRESERVED     account.customer_id_not_null (customer_id = null)
+   PRESERVED     account.customer_id_not_null (customer_id absent)
+   PRESERVED     account.status_not_null (status = null)
+   PRESERVED     account.status_not_null (status absent)
+   PRESERVED     account.account_pkey (duplicate key)
+   PRESERVED     customer.uq_customer_email (hand-written violation)
+   PRESERVED     customer.address_not_null (address = null)
+   PRESERVED     customer.address_not_null (address absent)
+   PRESERVED     customer.customer_id_not_null (customer_id = null)
+   PRESERVED     customer.customer_id_not_null (customer_id absent)
+   PRESERVED     customer.email_not_null (email = null)
+   PRESERVED     customer.email_not_null (email absent)
+   PRESERVED     customer.updated_at_not_null (updated_at = null)
+   INVALID_PROBE customer.updated_at_not_null (updated_at absent)
+   PRESERVED     customer.customer_pkey (duplicate key)
+   PRESERVED     ledger_entry.nonzero (hand-written violation)
+   EVAPORATED    ledger_entry.ledger_entry_account_id_fkey (account_id -> nonexistent)
+   PRESERVED     ledger_entry.uq_acct_ref (hand-written violation)
+   PRESERVED     ledger_entry.account_id_not_null (account_id = null)
+   PRESERVED     ledger_entry.account_id_not_null (account_id absent)
+   PRESERVED     ledger_entry.amount_not_null (amount = null)
+   PRESERVED     ledger_entry.amount_not_null (amount absent)
+   PRESERVED     ledger_entry.entry_id_not_null (entry_id = null)
+   PRESERVED     ledger_entry.entry_id_not_null (entry_id absent)
+   PRESERVED     ledger_entry.ledger_entry_pkey (duplicate key)
+   PRESERVED     orders.order_status (hand-written violation)
+   PRESERVED     orders.total_pos (hand-written violation)
+   EVAPORATED    orders.orders_customer_id_fkey (customer_id -> nonexistent)
+   PRESERVED     orders.created_at_not_null (created_at = null)
+   PRESERVED     orders.created_at_not_null (created_at absent)
+   PRESERVED     orders.customer_id_not_null (customer_id = null)
+   PRESERVED     orders.customer_id_not_null (customer_id absent)
+   PRESERVED     orders.order_id_not_null (order_id = null)
+   PRESERVED     orders.order_id_not_null (order_id absent)
+   PRESERVED     orders.status_not_null (status = null)
+   PRESERVED     orders.status_not_null (status absent)
+   PRESERVED     orders.total_not_null (total = null)
+   PRESERVED     orders.total_not_null (total absent)
+   PRESERVED     orders.orders_pkey (duplicate key)
+
+written to /Users/medhabadamikar/Downloads/migration-lab/results/lab_b.json
+
+=== lab_b_omit ===
+customer      record parity 1.0000 | digest parity strict 0.6659 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+              timestamp ties created: 0
+account       record parity 1.0000 | digest parity strict 1.0000 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+ledger_entry  record parity 1.0000 | digest parity strict 0.6661 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+              timestamp ties created: 0
+orders        record parity 1.0000 | digest parity strict 1.0000 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+              timestamp ties created: 0
+drift ledger_entry.amount: 0.0000 (relative 0.000e+00, target type Decimal128)
+drift orders.total: 0.0000 (relative 0.000e+00, target type Decimal128)
+Class II predicate divergence: 3 of 9
+   phone IS NULL              sql=    6683 mongo=    6683 
+   phone IS NOT NULL          sql=   13317 mongo=   13317 
+   phone = ''                 sql=    6586 mongo=    6586 
+   phone <> ''                sql=    6731 mongo=   13414 DIVERGES
+   phone IS NULL OR = ''      sql=   13269 mongo=   13269 
+   NOT (phone = '')           sql=    6731 mongo=   13414 DIVERGES
+   memo IS NULL               sql=  267114 mongo=  267114 
+   memo <> ''                 sql=  266453 mongo=  533567 DIVERGES
+   memo IS DISTINCT FROM ''   sql=  533567 mongo=  533567 
+Class III: 30 declared constraints; survival 0.9318181818181818; {'PRESERVED': 41, 'EVAPORATED': 3, 'INVALID_PROBE': 2}
+   PRESERVED     account.balance_nonneg (hand-written violation)
+   PRESERVED     account.status_enum (hand-written violation)
+   EVAPORATED    account.account_customer_id_fkey (customer_id -> nonexistent)
+   PRESERVED     account.account_id_not_null (account_id = null)
+   PRESERVED     account.account_id_not_null (account_id absent)
+   PRESERVED     account.balance_not_null (balance = null)
+   INVALID_PROBE account.balance_not_null (balance absent)
+   PRESERVED     account.customer_id_not_null (customer_id = null)
+   PRESERVED     account.customer_id_not_null (customer_id absent)
+   PRESERVED     account.status_not_null (status = null)
+   PRESERVED     account.status_not_null (status absent)
+   PRESERVED     account.account_pkey (duplicate key)
+   PRESERVED     customer.uq_customer_email (hand-written violation)
+   PRESERVED     customer.address_not_null (address = null)
+   PRESERVED     customer.address_not_null (address absent)
+   PRESERVED     customer.customer_id_not_null (customer_id = null)
+   PRESERVED     customer.customer_id_not_null (customer_id absent)
+   PRESERVED     customer.email_not_null (email = null)
+   PRESERVED     customer.email_not_null (email absent)
+   PRESERVED     customer.updated_at_not_null (updated_at = null)
+   INVALID_PROBE customer.updated_at_not_null (updated_at absent)
+   PRESERVED     customer.customer_pkey (duplicate key)
+   PRESERVED     ledger_entry.nonzero (hand-written violation)
+   EVAPORATED    ledger_entry.ledger_entry_account_id_fkey (account_id -> nonexistent)
+   PRESERVED     ledger_entry.uq_acct_ref (hand-written violation)
+   PRESERVED     ledger_entry.account_id_not_null (account_id = null)
+   PRESERVED     ledger_entry.account_id_not_null (account_id absent)
+   PRESERVED     ledger_entry.amount_not_null (amount = null)
+   PRESERVED     ledger_entry.amount_not_null (amount absent)
+   PRESERVED     ledger_entry.entry_id_not_null (entry_id = null)
+   PRESERVED     ledger_entry.entry_id_not_null (entry_id absent)
+   PRESERVED     ledger_entry.ledger_entry_pkey (duplicate key)
+   PRESERVED     orders.order_status (hand-written violation)
+   PRESERVED     orders.total_pos (hand-written violation)
+   EVAPORATED    orders.orders_customer_id_fkey (customer_id -> nonexistent)
+   PRESERVED     orders.created_at_not_null (created_at = null)
+   PRESERVED     orders.created_at_not_null (created_at absent)
+   PRESERVED     orders.customer_id_not_null (customer_id = null)
+   PRESERVED     orders.customer_id_not_null (customer_id absent)
+   PRESERVED     orders.order_id_not_null (order_id = null)
+   PRESERVED     orders.order_id_not_null (order_id absent)
+   PRESERVED     orders.status_not_null (status = null)
+   PRESERVED     orders.status_not_null (status absent)
+   PRESERVED     orders.total_not_null (total = null)
+   PRESERVED     orders.total_not_null (total absent)
+   PRESERVED     orders.orders_pkey (duplicate key)
+
+written to /Users/medhabadamikar/Downloads/migration-lab/results/lab_b_omit.json
+
+=== lab_b_novalid ===
+customer      record parity 1.0000 | digest parity strict 1.0000 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+              timestamp ties created: 0
+account       record parity 1.0000 | digest parity strict 1.0000 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+ledger_entry  record parity 1.0000 | digest parity strict 1.0000 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+              timestamp ties created: 0
+orders        record parity 1.0000 | digest parity strict 1.0000 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+              timestamp ties created: 0
+drift ledger_entry.amount: 0.0000 (relative 0.000e+00, target type Decimal128)
+drift orders.total: 0.0000 (relative 0.000e+00, target type Decimal128)
+Class II predicate divergence: 3 of 9
+   phone IS NULL              sql=    6683 mongo=    6683 
+   phone IS NOT NULL          sql=   13317 mongo=   13317 
+   phone = ''                 sql=    6586 mongo=    6586 
+   phone <> ''                sql=    6731 mongo=   13414 DIVERGES
+   phone IS NULL OR = ''      sql=   13269 mongo=   13269 
+   NOT (phone = '')           sql=    6731 mongo=   13414 DIVERGES
+   memo IS NULL               sql=  267114 mongo=  267114 
+   memo <> ''                 sql=  266453 mongo=  533567 DIVERGES
+   memo IS DISTINCT FROM ''   sql=  533567 mongo=  533567 
+Class III: 30 declared constraints; survival 0.13636363636363635; {'EVAPORATED': 38, 'INVALID_PROBE': 2, 'PRESERVED': 6}
+   EVAPORATED    account.balance_nonneg (hand-written violation)
+   EVAPORATED    account.status_enum (hand-written violation)
+   EVAPORATED    account.account_customer_id_fkey (customer_id -> nonexistent)
+   EVAPORATED    account.account_id_not_null (account_id = null)
+   EVAPORATED    account.account_id_not_null (account_id absent)
+   EVAPORATED    account.balance_not_null (balance = null)
+   INVALID_PROBE account.balance_not_null (balance absent)
+   EVAPORATED    account.customer_id_not_null (customer_id = null)
+   EVAPORATED    account.customer_id_not_null (customer_id absent)
+   EVAPORATED    account.status_not_null (status = null)
+   EVAPORATED    account.status_not_null (status absent)
+   PRESERVED     account.account_pkey (duplicate key)
+   PRESERVED     customer.uq_customer_email (hand-written violation)
+   EVAPORATED    customer.address_not_null (address = null)
+   EVAPORATED    customer.address_not_null (address absent)
+   EVAPORATED    customer.customer_id_not_null (customer_id = null)
+   EVAPORATED    customer.customer_id_not_null (customer_id absent)
+   EVAPORATED    customer.email_not_null (email = null)
+   EVAPORATED    customer.email_not_null (email absent)
+   EVAPORATED    customer.updated_at_not_null (updated_at = null)
+   INVALID_PROBE customer.updated_at_not_null (updated_at absent)
+   PRESERVED     customer.customer_pkey (duplicate key)
+   EVAPORATED    ledger_entry.nonzero (hand-written violation)
+   EVAPORATED    ledger_entry.ledger_entry_account_id_fkey (account_id -> nonexistent)
+   PRESERVED     ledger_entry.uq_acct_ref (hand-written violation)
+   EVAPORATED    ledger_entry.account_id_not_null (account_id = null)
+   EVAPORATED    ledger_entry.account_id_not_null (account_id absent)
+   EVAPORATED    ledger_entry.amount_not_null (amount = null)
+   EVAPORATED    ledger_entry.amount_not_null (amount absent)
+   EVAPORATED    ledger_entry.entry_id_not_null (entry_id = null)
+   EVAPORATED    ledger_entry.entry_id_not_null (entry_id absent)
+   PRESERVED     ledger_entry.ledger_entry_pkey (duplicate key)
+   EVAPORATED    orders.order_status (hand-written violation)
+   EVAPORATED    orders.total_pos (hand-written violation)
+   EVAPORATED    orders.orders_customer_id_fkey (customer_id -> nonexistent)
+   EVAPORATED    orders.created_at_not_null (created_at = null)
+   EVAPORATED    orders.created_at_not_null (created_at absent)
+   EVAPORATED    orders.customer_id_not_null (customer_id = null)
+   EVAPORATED    orders.customer_id_not_null (customer_id absent)
+   EVAPORATED    orders.order_id_not_null (order_id = null)
+   EVAPORATED    orders.order_id_not_null (order_id absent)
+   EVAPORATED    orders.status_not_null (status = null)
+   EVAPORATED    orders.status_not_null (status absent)
+   EVAPORATED    orders.total_not_null (total = null)
+   EVAPORATED    orders.total_not_null (total absent)
+   PRESERVED     orders.orders_pkey (duplicate key)
+
+written to /Users/medhabadamikar/Downloads/migration-lab/results/lab_b_novalid.json
+== class IV (torn state)
+db=lab_a mode=notxn transfers_scheduled=20000 process_crashes=59 elapsed=11.1s
+balance total before=1000000000 after=999982802.8299999996088445199 drift=-17197.1700000003911554801
+transfers with 2 legs=11330  with 1 leg (torn)=46
+note: a crash after the debit but before the first leg is torn yet leaves no leg; only the balance drift reveals it.
+db=lab_b mode=notxn transfers_scheduled=20000 process_crashes=59 elapsed=10.2s
+balance total before=1000000000.0000 after=999982802.8300 drift=-17197.1700
+transfers with 2 legs=11330  with 1 leg (torn)=46
+note: a crash after the debit but before the first leg is torn yet leaves no leg; only the balance drift reveals it.
+db=lab_b mode=txn transfers_scheduled=20000 process_crashes=62 elapsed=81.0s
+balance total before=999982802.8300 after=999982802.8300 drift=0.0000
+transfers with 2 legs=10423  with 1 leg (torn)=0
+note: a crash after the debit but before the first leg is torn yet leaves no leg; only the balance drift reveals it.
+== class V (deferred divergence)
+snapshot customer: 20000
+snapshot account: 30000
+snapshot ledger_entry: 800000
+snapshot orders: 150000
+writes=   1000 open=  75444 divergent=   220
+writes=   2000 open=  75532 divergent=   410
+writes=   3000 open=  75674 divergent=   630
+writes=   4000 open=  75744 divergent=   829
+writes=   5000 open=  75869 divergent=  1060
+writes=   6000 open=  75983 divergent=  1261
+writes=   7000 open=  76101 divergent=  1392
+writes=   8000 open=  76223 divergent=  1597
+writes=   9000 open=  76320 divergent=  1778
+writes=  10000 open=  76452 divergent=  2000
+writes=  11000 open=  76565 divergent=  2168
+writes=  12000 open=  76654 divergent=  2290
+writes=  13000 open=  76767 divergent=  2406
+writes=  14000 open=  76898 divergent=  2596
+writes=  15000 open=  76997 divergent=  2712
+writes=  16000 open=  77094 divergent=  2965
+writes=  17000 open=  77231 divergent=  3134
+writes=  18000 open=  77363 divergent=  3313
+writes=  19000 open=  77467 divergent=  3450
+writes=  20000 open=  77586 divergent=  3568
+divergent at cutover (t=0): 0; ops: {'new_order': 5083, 'service': 10718, 'admin': 1185, 'ship': 2902, 'fanout_failed': 112}; written to /Users/medhabadamikar/Downloads/migration-lab/results/lab_b5_class5.csv
+== path C (live, changes the source; regenerate afterwards if re-running A/B)
+customer 20000
+account 30000
+ledger_entry 800000
+orders 150000
+workload: 409491 writes in 120s
+snapshot customer: 20000
+snapshot account: 30000
+snapshot ledger_entry: 806502
+snapshot orders: 150000
+cutover complete; 409491 change records replayed
+
+=== lab_c ===
+customer      record parity 1.0000 | digest parity strict 1.0000 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+              timestamp ties created: 0
+account       record parity 1.0000 | digest parity strict 1.0000 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+ledger_entry  record parity 1.0000 | digest parity strict 1.0000 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+              timestamp ties created: 0
+orders        record parity 1.0000 | digest parity strict 0.2095 lenient 0.2095 | keys lost 0 | collisions 0 | mismatches {'customer_address': 118580}
+              timestamp ties created: 0
+drift ledger_entry.amount: 0.0000 (relative 0.000e+00, target type Decimal128)
+drift orders.total: 0.0000 (relative 0.000e+00, target type Decimal128)
+Class II predicate divergence: 3 of 9
+   phone IS NULL              sql=    6644 mongo=    6644 
+   phone IS NOT NULL          sql=   13356 mongo=   13356 
+   phone = ''                 sql=    6621 mongo=    6621 
+   phone <> ''                sql=    6735 mongo=   13379 DIVERGES
+   phone IS NULL OR = ''      sql=   13265 mongo=   13265 
+   NOT (phone = '')           sql=    6735 mongo=   13379 DIVERGES
+   memo IS NULL               sql=  335138 mongo=  335138 
+   memo <> ''                 sql=  334621 mongo=  669759 DIVERGES
+   memo IS DISTINCT FROM ''   sql=  669759 mongo=  669759 
+Class III: 30 declared constraints; survival 0.9318181818181818; {'PRESERVED': 41, 'EVAPORATED': 3, 'INVALID_PROBE': 2}
+   PRESERVED     account.balance_nonneg (hand-written violation)
+   PRESERVED     account.status_enum (hand-written violation)
+   EVAPORATED    account.account_customer_id_fkey (customer_id -> nonexistent)
+   PRESERVED     account.account_id_not_null (account_id = null)
+   PRESERVED     account.account_id_not_null (account_id absent)
+   PRESERVED     account.balance_not_null (balance = null)
+   INVALID_PROBE account.balance_not_null (balance absent)
+   PRESERVED     account.customer_id_not_null (customer_id = null)
+   PRESERVED     account.customer_id_not_null (customer_id absent)
+   PRESERVED     account.status_not_null (status = null)
+   PRESERVED     account.status_not_null (status absent)
+   PRESERVED     account.account_pkey (duplicate key)
+   PRESERVED     customer.uq_customer_email (hand-written violation)
+   PRESERVED     customer.address_not_null (address = null)
+   PRESERVED     customer.address_not_null (address absent)
+   PRESERVED     customer.customer_id_not_null (customer_id = null)
+   PRESERVED     customer.customer_id_not_null (customer_id absent)
+   PRESERVED     customer.email_not_null (email = null)
+   PRESERVED     customer.email_not_null (email absent)
+   PRESERVED     customer.updated_at_not_null (updated_at = null)
+   INVALID_PROBE customer.updated_at_not_null (updated_at absent)
+   PRESERVED     customer.customer_pkey (duplicate key)
+   PRESERVED     ledger_entry.nonzero (hand-written violation)
+   EVAPORATED    ledger_entry.ledger_entry_account_id_fkey (account_id -> nonexistent)
+   PRESERVED     ledger_entry.uq_acct_ref (hand-written violation)
+   PRESERVED     ledger_entry.account_id_not_null (account_id = null)
+   PRESERVED     ledger_entry.account_id_not_null (account_id absent)
+   PRESERVED     ledger_entry.amount_not_null (amount = null)
+   PRESERVED     ledger_entry.amount_not_null (amount absent)
+   PRESERVED     ledger_entry.entry_id_not_null (entry_id = null)
+   PRESERVED     ledger_entry.entry_id_not_null (entry_id absent)
+   PRESERVED     ledger_entry.ledger_entry_pkey (duplicate key)
+   PRESERVED     orders.order_status (hand-written violation)
+   PRESERVED     orders.total_pos (hand-written violation)
+   EVAPORATED    orders.orders_customer_id_fkey (customer_id -> nonexistent)
+   PRESERVED     orders.created_at_not_null (created_at = null)
+   PRESERVED     orders.created_at_not_null (created_at absent)
+   PRESERVED     orders.customer_id_not_null (customer_id = null)
+   PRESERVED     orders.customer_id_not_null (customer_id absent)
+   PRESERVED     orders.order_id_not_null (order_id = null)
+   PRESERVED     orders.order_id_not_null (order_id absent)
+   PRESERVED     orders.status_not_null (status = null)
+   PRESERVED     orders.status_not_null (status absent)
+   PRESERVED     orders.total_not_null (total = null)
+   PRESERVED     orders.total_not_null (total absent)
+   PRESERVED     orders.orders_pkey (duplicate key)
+
+written to /Users/medhabadamikar/Downloads/migration-lab/results/lab_c.json
+divergent at cutover (t=0): 56245; ops: {'new_order': 0, 'service': 0, 'admin': 0, 'ship': 0, 'fanout_failed': 0}; written to /Users/medhabadamikar/Downloads/migration-lab/results/lab_c_class5.csv
+customer 20000
+account 30000
+ledger_entry 800000
+orders 150000
+workload: 416163 writes in 120s
+snapshot customer: 20000
+snapshot account: 30000
+snapshot ledger_entry: 806381
+snapshot orders: 150000
+cutover complete; 416163 change records replayed
+
+=== lab_c_fanout ===
+customer      record parity 1.0000 | digest parity strict 1.0000 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+              timestamp ties created: 0
+account       record parity 1.0000 | digest parity strict 1.0000 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+ledger_entry  record parity 1.0000 | digest parity strict 1.0000 lenient 1.0000 | keys lost 0 | collisions 0 | mismatches {}
+              timestamp ties created: 0
+orders        record parity 1.0000 | digest parity strict 0.5976 lenient 0.5976 | keys lost 0 | collisions 0 | mismatches {'customer_address': 60354}
+              timestamp ties created: 0
+drift ledger_entry.amount: 0.0000 (relative 0.000e+00, target type Decimal128)
+drift orders.total: 0.0000 (relative 0.000e+00, target type Decimal128)
+Class II predicate divergence: 3 of 9
+   phone IS NULL              sql=    6652 mongo=    6652 
+   phone IS NOT NULL          sql=   13348 mongo=   13348 
+   phone = ''                 sql=    6642 mongo=    6642 
+   phone <> ''                sql=    6706 mongo=   13358 DIVERGES
+   phone IS NULL OR = ''      sql=   13294 mongo=   13294 
+   NOT (phone = '')           sql=    6706 mongo=   13358 DIVERGES
+   memo IS NULL               sql=  336246 mongo=  336246 
+   memo <> ''                 sql=  335718 mongo=  671964 DIVERGES
+   memo IS DISTINCT FROM ''   sql=  671964 mongo=  671964 
+Class III: 30 declared constraints; survival 0.9318181818181818; {'PRESERVED': 41, 'EVAPORATED': 3, 'INVALID_PROBE': 2}
+   PRESERVED     account.balance_nonneg (hand-written violation)
+   PRESERVED     account.status_enum (hand-written violation)
+   EVAPORATED    account.account_customer_id_fkey (customer_id -> nonexistent)
+   PRESERVED     account.account_id_not_null (account_id = null)
+   PRESERVED     account.account_id_not_null (account_id absent)
+   PRESERVED     account.balance_not_null (balance = null)
+   INVALID_PROBE account.balance_not_null (balance absent)
+   PRESERVED     account.customer_id_not_null (customer_id = null)
+   PRESERVED     account.customer_id_not_null (customer_id absent)
+   PRESERVED     account.status_not_null (status = null)
+   PRESERVED     account.status_not_null (status absent)
+   PRESERVED     account.account_pkey (duplicate key)
+   PRESERVED     customer.uq_customer_email (hand-written violation)
+   PRESERVED     customer.address_not_null (address = null)
+   PRESERVED     customer.address_not_null (address absent)
+   PRESERVED     customer.customer_id_not_null (customer_id = null)
+   PRESERVED     customer.customer_id_not_null (customer_id absent)
+   PRESERVED     customer.email_not_null (email = null)
+   PRESERVED     customer.email_not_null (email absent)
+   PRESERVED     customer.updated_at_not_null (updated_at = null)
+   INVALID_PROBE customer.updated_at_not_null (updated_at absent)
+   PRESERVED     customer.customer_pkey (duplicate key)
+   PRESERVED     ledger_entry.nonzero (hand-written violation)
+   EVAPORATED    ledger_entry.ledger_entry_account_id_fkey (account_id -> nonexistent)
+   PRESERVED     ledger_entry.uq_acct_ref (hand-written violation)
+   PRESERVED     ledger_entry.account_id_not_null (account_id = null)
+   PRESERVED     ledger_entry.account_id_not_null (account_id absent)
+   PRESERVED     ledger_entry.amount_not_null (amount = null)
+   PRESERVED     ledger_entry.amount_not_null (amount absent)
+   PRESERVED     ledger_entry.entry_id_not_null (entry_id = null)
+   PRESERVED     ledger_entry.entry_id_not_null (entry_id absent)
+   PRESERVED     ledger_entry.ledger_entry_pkey (duplicate key)
+   PRESERVED     orders.order_status (hand-written violation)
+   PRESERVED     orders.total_pos (hand-written violation)
+   EVAPORATED    orders.orders_customer_id_fkey (customer_id -> nonexistent)
+   PRESERVED     orders.created_at_not_null (created_at = null)
+   PRESERVED     orders.created_at_not_null (created_at absent)
+   PRESERVED     orders.customer_id_not_null (customer_id = null)
+   PRESERVED     orders.customer_id_not_null (customer_id absent)
+   PRESERVED     orders.order_id_not_null (order_id = null)
+   PRESERVED     orders.order_id_not_null (order_id absent)
+   PRESERVED     orders.status_not_null (status = null)
+   PRESERVED     orders.status_not_null (status absent)
+   PRESERVED     orders.total_not_null (total = null)
+   PRESERVED     orders.total_not_null (total absent)
+   PRESERVED     orders.orders_pkey (duplicate key)
+
+written to /Users/medhabadamikar/Downloads/migration-lab/results/lab_c_fanout.json
+divergent at cutover (t=0): 0; ops: {'new_order': 0, 'service': 0, 'admin': 0, 'ship': 0, 'fanout_failed': 0}; written to /Users/medhabadamikar/Downloads/migration-lab/results/lab_c_fanout_class5.csv
+== done; see results/
